@@ -5,7 +5,7 @@
 venv/
 env/
 .venv/
-
+extract
 # Python
 __pycache__/
 *.py[cod]

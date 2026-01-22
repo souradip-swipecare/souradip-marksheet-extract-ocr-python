@@ -8,19 +8,30 @@ from datetime import datetime
 from pathlib import Path
 import hashlib
 import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
+from app.core.config import settings
+ 
 logger = logging.getLogger(__name__)
 
 
 class OCRService:
 
     EXTRACT_DIR = Path("extract")
-    MAX_WORKERS = 8  # Number of parallel OCR threads
-    
-    def __init__(self):
+    MAX_WORKERS = 4  # Number of parallel OCR threads (if supported)
+
+    def __init__(self, use_parallel: bool = True):
         # Create extract folder
         self.EXTRACT_DIR.mkdir(exist_ok=True)
+        self.use_parallel = use_parallel
+
+        # Check if threading is available
+        if self.use_parallel:
+            try:
+                from concurrent.futures import ThreadPoolExecutor
+                self._thread_executor_available = True
+            except ImportError:
+                logger.warning("ThreadPoolExecutor not available, using sequential processing")
+                self._thread_executor_available = False
+                self.use_parallel = False
     
     def extract_text(self, image_bytes: bytes, save_text: bool = True) -> Dict[str, Any]:
 
@@ -154,26 +165,46 @@ class OCRService:
         inverted = cv2.bitwise_not(enhanced)
         ocr_tasks.append((inverted, "--oem 3 --psm 3"))
 
-        # === STAGE 2: Run OCR in PARALLEL ===
-        logger.info(f"Running {len(ocr_tasks)} OCR passes in parallel...")
+        # === STAGE 2: Run OCR (Parallel or Sequential) ===
         results: List[Dict[str, Any]] = []
-        
-        with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
-            # Submit all OCR tasks
-            futures = {
-                executor.submit(self._run_ocr, img, cfg): i 
-                for i, (img, cfg) in enumerate(ocr_tasks)
-            }
-            
-            # Collect results as they complete
-            for future in as_completed(futures):
+
+        if self.use_parallel and self._thread_executor_available:
+            # Parallel execution
+            logger.info(f"Running {len(ocr_tasks)} OCR passes in parallel...")
+            try:
+                from concurrent.futures import ThreadPoolExecutor, as_completed
+
+                with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
+                    # Submit all OCR tasks
+                    futures = {
+                        executor.submit(self._run_ocr, img, cfg): i
+                        for i, (img, cfg) in enumerate(ocr_tasks)
+                    }
+
+                    # Collect results as they complete
+                    for future in as_completed(futures):
+                        try:
+                            result = future.result()
+                            results.append(result)
+                        except Exception as e:
+                            logger.error(f"OCR pass failed: {e}")
+                            results.append({"raw_text": "", "avg_confidence": 0.0, "words": []})
+            except Exception as e:
+                logger.error(f"Parallel processing failed: {e}, falling back to sequential")
+                self.use_parallel = False
+                results = []
+
+        if not self.use_parallel or not results:
+            # Sequential execution (fallback)
+            logger.info(f"Running {len(ocr_tasks)} OCR passes sequentially...")
+            for i, (img, cfg) in enumerate(ocr_tasks):
                 try:
-                    result = future.result()
+                    result = self._run_ocr(img, cfg)
                     results.append(result)
                 except Exception as e:
-                    logger.error(f"OCR pass failed: {e}")
+                    logger.error(f"OCR pass {i+1} failed: {e}")
                     results.append({"raw_text": "", "avg_confidence": 0.0, "words": []})
-        
+
         logger.info(f"Completed {len(results)} OCR passes")
         return results
     
@@ -238,7 +269,6 @@ class OCRService:
 
     def _run_ocr(self, processed_image: np.ndarray, config: str) -> Dict[str, Any]:
         try:
-            # Try English + Hindi for Indian documents
             try:
                 lang = "eng+hin"
                 data = pytesseract.image_to_data(
@@ -320,5 +350,4 @@ class OCRService:
         except Exception as e:
             logger.error(f"OCR error: {e}")
             return {"raw_text": "", "avg_confidence": 0.0, "words": [], "word_count": 0, "high_conf_words": 0}
-
-ocr_service = OCRService()
+ocr_service = OCRService(use_parallel=settings.ocr_use_parallel)

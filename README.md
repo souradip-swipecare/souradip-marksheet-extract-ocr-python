@@ -146,7 +146,7 @@ We run Tesseract OCR **17 times in PARALLEL** with different image preprocessing
 
 ### Parallel Processing (8 Workers)
 
-All 17 OCR passes run **simultaneously** using Python's `ThreadPoolExecutor` with 8 workers:
+All 17 OCR passes run **simultaneously** using Python's `ThreadPoolExecutor` with 4 workers:
 
 ```
 BEFORE (Sequential):
@@ -164,6 +164,8 @@ Pass 17 ──┘
 ```
 
 **Result: ~3-4x faster OCR processing!**
+
+**Note:** If your system doesn't support `ThreadPoolExecutor` (some embedded systems or restricted environments), the service will automatically fall back to sequential processing. You can also manually disable parallel processing by setting `OCR_USE_PARALLEL=false` in your `.env` file.
 
 ### Preprocessing Passes
 
@@ -256,6 +258,7 @@ GEMINI_MODEL=gemini-2.5-flash
 # OCR settings
 OCR_CONFIDENCE_THRESHOLD=0.60
 SAVE_OCR_TEXT=true
+OCR_USE_PARALLEL=true  # Set to false if ThreadPoolExecutor not supported
 
 
 ```
@@ -420,6 +423,7 @@ All settings in `.env` file:
 | `GOOGLE_API_KEY` | - | Your Gemini API key |
 | `GEMINI_MODEL` | gemini-2.5-flash | Gemini model to use |
 | `OCR_CONFIDENCE_THRESHOLD` | 0.60 | Min confidence for OCR mode |
+| `OCR_USE_PARALLEL` | true | Enable parallel OCR processing (set to false if not supported) |
 | `MAX_FILE_SIZE_MB` | 10 | Max upload size |
 | `SAVE_OCR_TEXT` | true | Save OCR output to files |
 | `DEBUG` | false | Enable debug mode |

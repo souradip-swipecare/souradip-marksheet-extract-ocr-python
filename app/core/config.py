@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     google_api_key: Optional[str] = Field(default=None)
     openai_api_key: Optional[str] = Field(default=None)
     default_llm_provider: str = Field(default="gemini")
-    # gemini-2.5-flash for best accuracy (slower but more detailed)
+
     gemini_model: str = Field(default="gemini-2.5-flash")
     openai_model: str = Field(default="gpt-4o")
     
@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     save_ocr_text: bool = Field(default=True)
     ocr_extract_dir: str = Field(default="extract")
     ocr_confidence_threshold: float = Field(default=0.60)
+    ocr_use_parallel: bool = Field(default=True)  # Set to False if ThreadPoolExecutor not supported
     
     log_level: str = Field(default="INFO")
     log_file: str = Field(default="logs/app.log")

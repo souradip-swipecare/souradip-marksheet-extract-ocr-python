@@ -635,7 +635,6 @@ class GeminiExtractor:
         return result
 
 class OpenAIExtractor(BaseLLMExtractor):
-    """OpenAI GPT-4 Vision based extractor (alternative to Gemini)."""
     
     def __init__(self):
         try:
