@@ -167,7 +167,18 @@ Pass 17 ──┘
 
 **Note:** If your system doesn't support `ThreadPoolExecutor` (some embedded systems or restricted environments), the service will automatically fall back to sequential processing. You can also manually disable parallel processing by setting `OCR_USE_PARALLEL=false` in your `.env` file.
 
-### Preprocessing Passes
+### Preprocessing Passes new 
+passes through only 5vlayer
+
+        return [
+            (gray, "--oem 3 --psm 3"),
+            (enhanced, "--oem 3 --psm 6"),
+            (otsu, "--oem 3 --psm 6"),
+            (adaptive, "--oem 3 --psm 6"),
+            (sharpened, "--oem 3 --psm 3"),
+        ]
+
+### Preprocessing Passes Old 
 
 | Pass | Technique | Purpose |
 |------|-----------|---------|
