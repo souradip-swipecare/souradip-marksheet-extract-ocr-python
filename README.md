@@ -234,7 +234,7 @@ Download from: https://github.com/UB-Mannheim/tesseract/wiki
 Create `.env` file:
 ```env
 # App Settings
-APP_NAME="Marksheet Extraction API"
+APP_NAME="Souradip Marksheet Extraction API"
 DEBUG=false
 
 # Gemini API Key (get from https://aistudio.google.com/apikey)
