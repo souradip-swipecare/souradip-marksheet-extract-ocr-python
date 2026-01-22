@@ -1,4 +1,4 @@
-# Marksheet Extraction API
+# Souradip Marksheet Extraction API
 
 > A simple API that extracts data from marksheets using OCR and AI. Just upload image/pdf and get structured JSON!
 
@@ -504,20 +504,13 @@ Either:
 
 ---
 
-## TODO
+## Can be improved
 
-- [ ] Add support for OpenAI GPT-4 Vision
+- [ ] Add support for Openai GPT-4 Vision
 - [ ] Add more test cases
 - [ ] Support for handwritten marksheets
+- [ ] Using sinario background job
 - [ ] Add caching for repeated requests
 - [x] Rate limiting (implemented via slowapi)
 
 ---
-
-## Credits
-
-- **Tesseract OCR** - Free and open source OCR engine
-- **Google Gemini** - AI model for understanding marksheets
-- **FastAPI** - Fast web framework for Python
-
-
