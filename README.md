@@ -6,6 +6,12 @@ try it ## https://aiintern.souradipproject.cloud/demo
 Made by: **Souradip Biswas**
 
 ---
+## Sample images
+![Home Page](screenshots/home.png)
+![Process Page](screenshots/processing.png)
+![result Page](screenshots/result_1.png)
+![result 2 Page](screenshots/result2.png)
+![json copy Page](screenshots/json.png)
 
 ## Folder Structure
 
