@@ -203,7 +203,7 @@ Score = (alpha_count * 0.4) + (confidence * 100 * 0.4) + (word_count * 0.2)
 ### 1. Clone and setup
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/souradip-swipecare/souradip-marksheet-extract-ocr-python.git
 cd python_api_extract
 
 # Create virtual environment
