@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  marksheet-api:
+    build: .
+    container_name: marksheet-extraction-api
+    ports:
+      - "8000:8000"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DEFAULT_LLM_PROVIDER=${DEFAULT_LLM_PROVIDER:-gemini}
+      - API_KEY_ENABLED=${API_KEY_ENABLED:-false}
+      - API_KEY=${API_KEY}
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+      - ./samples:/app/samples
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
