@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     save_ocr_text: bool = Field(default=True)
     ocr_extract_dir: str = Field(default="extract")
     ocr_confidence_threshold: float = Field(default=0.60)
-    ocr_use_parallel: bool = Field(default=True)  # Set to False if ThreadPoolExecutor not supported
+    ocr_use_parallel: bool = Field(default=False)  # Set to False if ThreadPoolExecutor not supported
     
     log_level: str = Field(default="INFO")
     log_file: str = Field(default="logs/app.log")
