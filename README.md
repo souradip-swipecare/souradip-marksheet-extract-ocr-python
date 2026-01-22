@@ -219,6 +219,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+pip install loguru
 ```
 
 ### 2. Install Tesseract OCR
@@ -263,7 +264,7 @@ SAVE_OCR_TEXT=true
 ### 4. Run the server
 
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn app.main:app --reload
 ```
 
 ### 5. Open in browser
