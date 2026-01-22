@@ -1,6 +1,7 @@
 # Souradip Marksheet Extraction API
 
 > A simple API that extracts data from marksheets using OCR and AI. Just upload image/pdf and get structured JSON!
+try it ## https://aiintern.souradipproject.cloud/demo
 
 Made by: **Souradip Biswas**
 
@@ -229,6 +230,7 @@ sudo apt-get install tesseract-ocr
 **Windows:**
 Download from: https://github.com/UB-Mannheim/tesseract/wiki
 
+
 ### 3. Setup environment variables
 
 Create `.env` file:
@@ -247,7 +249,10 @@ GEMINI_MODEL=gemini-2.5-flash
 # OCR settings
 OCR_CONFIDENCE_THRESHOLD=0.60
 SAVE_OCR_TEXT=true
+
+
 ```
+
 
 ### 4. Run the server
 
