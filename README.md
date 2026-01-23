@@ -4,7 +4,7 @@
 try it ## https://aiintern.souradipproject.cloud/demo
 
 Made by: **Souradip Biswas**
-
+For better accuracy   we can use lamda function for concurrent response as it is very cpu heavy task
 ---
 ## Sample images
 ![Home Page](screenshots/home.png)        ![result Page](screenshots/result_1.png) ![result 2 Page](screenshots/result2.png)
