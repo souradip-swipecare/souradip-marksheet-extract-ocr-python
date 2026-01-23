@@ -139,18 +139,26 @@ python_api_extract/
 ```
 
 ---
+## PDF Processing Logic
+
+When you upload a PDF:
+
+- **If the PDF contains selectable text** (digital PDF), we extract the text directly for faster and more accurate results.
+- **If the PDF is image-based** (scanned or photographed), we convert each page to an image and run OCR (Optical Character Recognition) to extract the text.
+
+This ensures the best possible extraction quality and speed for both digital and scanned PDFs.
 
 ## Multi-Pass OCR (How It Works)
 
-We run Tesseract OCR **17 times in PARALLEL** with different image preprocessing techniques and pick the best result. This handles various image qualities, lighting, and backgrounds.
+We run Tesseract OCR **5 times in PARALLEL** with different image preprocessing techniques and pick the best result. This handles various image qualities, lighting, and backgrounds.
 
 ### Parallel Processing (8 Workers)
 
-All 17 OCR passes run **simultaneously** using Python's `ThreadPoolExecutor` with 4 workers:
+All 5 OCR passes run **simultaneously** using Python's `ThreadPoolExecutor` with 4 workers:
 
 ```
 BEFORE (Sequential):
-Pass 1 → Pass 2 → Pass 3 → ... → Pass 17
+Pass 1 → Pass 2 → Pass 3 → ... → Pass 5
 [============= 15 seconds =============]
 
 AFTER (Parallel with 8 workers):
@@ -159,7 +167,7 @@ Pass 2  ──┤
 Pass 3  ──┤
 Pass 4  ──┼──→ All run at the same time!
 ...       │
-Pass 17 ──┘
+Pass 5 ──┘
 [=== 4-5 seconds ===]
 ```
 
@@ -281,7 +289,7 @@ OCR_USE_PARALLEL=true  # Set to false if ThreadPoolExecutor not supported
 python -m uvicorn app.main:app --reload
 ```
 
-### 5. Open in browser
+### 5. Open in browser locally
 
 - **Demo Page:** http://localhost:8000/
 - **API Docs:** http://localhost:8000/docs
